@@ -57,3 +57,39 @@ variable "health_check" {
   type        = string
   default     = "/"
 }
+
+variable "ecs_tg_name" {
+  description = "Name for the Target Group"
+  type        = string
+  default     = "ecs-target-group" 
+}
+
+variable "ecs_tg_port" {
+  description = "Port for the Target Group"
+  type        = number
+  default     = 80
+}
+
+variable "ecs_tg_protocol" {
+  description = "Protocol for the Target Group"
+  type        = string
+  default     = "HTTP"
+}
+
+variable "ecs_lt_port" {
+  description = "Port for the Listener"
+  type        = number
+  default     = 80
+}
+
+variable "ecs_lt_protocol" {
+  description = "Protocol for the Listener"
+  type        = string
+  default     = "HTTP"
+}
+
+variable "ecs_lb_name" {
+  description = "Name for the Load Balancer"
+  type = string
+  default = "ecs-load-balancer"
+}

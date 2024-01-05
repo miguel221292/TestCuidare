@@ -61,16 +61,16 @@ resource "aws_ecs_cluster" "my_ecs_cluster" {
 }
 
 resource "aws_ecs_capacity_provider" "ecs_capacity_provider" {
-  name = "docker-getting-started"
+  name = var.ecs_capacity_name
 
   auto_scaling_group_provider {
     auto_scaling_group_arn = data.terraform_remote_state.asg.outputs.asg_arn
 
     managed_scaling {
-      maximum_scaling_step_size = 1000
-      minimum_scaling_step_size = 1
+      maximum_scaling_step_size = var.ecs_max_scaling_size
+      minimum_scaling_step_size = var.ecs_min_scaling_size
       status                    = "ENABLED"
-      target_capacity           = 1
+      target_capacity           = var.ecs_target_capacity
     }
   }
 
@@ -90,7 +90,7 @@ resource "aws_ecs_cluster_capacity_providers" "example" {
 
 resource "aws_ecs_task_definition" "ecs_task_definition" {
   family             = "my-ecs-task"
-  network_mode       = "awsvpc"
+  network_mode       = "bridge"
   execution_role_arn = "arn:aws:iam::403811705992:role/ecsTaskExecutionRole"
   cpu                = 256
   runtime_platform {
@@ -99,13 +99,10 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
   }
   container_definitions = jsonencode([
     {
-      name   = "test1"
+      name   = var.container_name
       image  = "public.ecr.aws/k9h8z0a5/docker-getting-started:latest"
       cpu    = 256
       memory = 512
-      healthcheck = {
-        command = ["CMD-SHELL", "echo 'healthy' || exit 1"]
-      }
       essential = true
       portMappings = [
         {
@@ -118,33 +115,15 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
 }
 
 resource "aws_ecs_service" "ecs_service" {
-  name            = "my-ecs-service"
+  name            = var.svc_name
   cluster         = aws_ecs_cluster.my_ecs_cluster.id
   task_definition = aws_ecs_task_definition.ecs_task_definition.arn
   desired_count   = 1
-
-  network_configuration {
-    subnets         = [data.terraform_remote_state.vpc.outputs.subnet_public_id_a,data.terraform_remote_state.vpc.outputs.subnet_public_id_b]
-    security_groups = [data.terraform_remote_state.vpc.outputs.security_group_id]
-  }
-
-  force_new_deployment = true
-  placement_constraints {
-    type = "distinctInstance"
-  }
-
-  triggers = {
-    redeployment = timestamp()
-  }
-
-  capacity_provider_strategy {
-    capacity_provider = aws_ecs_capacity_provider.ecs_capacity_provider.name
-    weight            = 100
-  }
+  launch_type     = var.container_launch_type
 
   load_balancer {
     target_group_arn = data.terraform_remote_state.ec2.outputs.tg_arn
-    container_name   = "test1"
+    container_name   = var.container_name
     container_port   = 80
   }
 

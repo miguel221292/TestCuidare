@@ -25,3 +25,45 @@ variable "enviroment"{
   type = string
   default = "sandbox"
 }
+
+variable "ecs_capacity_name" {
+  description = "Capacity Provider's Name"
+  type        = string
+  default     = "docker-getting-started"
+}
+
+variable "ecs_max_scaling_size" {
+  description = "Max capacity scaling size"
+  type        = number
+  default     =  1000
+}
+
+variable "ecs_min_scaling_size" {
+  description = "Min capacity scaling size"
+  type        = number
+  default     =  1
+}
+
+variable "ecs_target_capacity" {
+  description = "Target capacity"
+  type        = number
+  default     = 1
+}
+
+variable "container_name" {
+  description = "Containers' Name"
+  type        = string
+  default     = "docker"  
+}
+
+variable "container_launch_type" {
+  description = "Where to deploy our containers"
+  type        = string
+  default     = "EC2"
+}
+
+variable "svc_name" {
+  description = ""
+  type        = string
+  default     = "docker-service"
+}

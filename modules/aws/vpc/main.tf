@@ -25,100 +25,31 @@ provider "aws" {
   profile = local.profile
 }
 
-resource "aws_vpc" "vpc_ecs" {
-  cidr_block = var.vpc_cidr_block
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "~> 2"
 
-  enable_dns_support   = true
-  enable_dns_hostnames = true
+  name = var.vpc_name
+  cidr = var.vpc_cidr_block
 
-  tags = {
-    ops_env             = "${local.environment_name}"
-    ops_managed_by      = "terraform"
-    Name                = "ECS VPC"
-  }
+  azs              = var.azs
+  public_subnets   = var.public_subnet_cidrs
+  private_subnets  = var.private_subnet_cidrs
+
+  create_database_subnet_group = true
+  enable_dns_hostnames         = true
+
+  enable_nat_gateway  = true
+  single_nat_gateway  = true
+  reuse_nat_ips       = true
+  external_nat_ip_ids = aws_eip.eip_nat.*.id
 }
 
-resource "aws_subnet" "public_subnets" {
-  count               = length(var.public_subnet_cidrs)
-  vpc_id              = aws_vpc.vpc_ecs.id
-  cidr_block          = element(var.public_subnet_cidrs, count.index)
-  availability_zone   = element(var.azs, count.index)
-  tags = {
-    Name = "Public Subnet ${count.index + 1}"
-  }
-}
-
-resource "aws_subnet" "private_subnets" {
-  count               = length(var.private_subnet_cidrs)
-  vpc_id              = aws_vpc.vpc_ecs.id
-  cidr_block          = element(var.private_subnet_cidrs, count.index)
-  availability_zone   = element(var.azs, count.index)
-  tags = {
-    Name = "Private Subnet ${count.index + 1}"
-  }
-}
-
-resource "aws_internet_gateway" "public_internet_gateway" {
-  vpc_id = aws_vpc.vpc_ecs.id
-
-  tags = {
-    Name = "ECS Internet Gateway"
-  }
-}
-
-resource "aws_route_table" "public_rt" {
- vpc_id = aws_vpc.vpc_ecs.id
- 
- route {
-   cidr_block = "0.0.0.0/0"
-   gateway_id = aws_internet_gateway.public_internet_gateway.id
- }
- 
- tags = {
-   Name = "Public Route Table"
- }
-}
-
-resource "aws_route_table_association" "public_subnet_asso" {
- count          = length(var.public_subnet_cidrs)
- subnet_id      = element(aws_subnet.public_subnets[*].id, count.index)
- route_table_id = aws_route_table.public_rt.id
-}
-
-
-
-resource "aws_nat_gateway" "private_nat_gateway" {
-  allocation_id = aws_eip.my_eip.id
-  subnet_id     = element(aws_subnet.private_subnets[*].id, 0)
-  depends_on    = [aws_internet_gateway.public_internet_gateway]
-}
-
-resource "aws_route_table" "private_rt" {
- vpc_id = aws_vpc.vpc_ecs.id
- tags = {
-   Name = "Private Route Table"
- }
-}
-
-resource "aws_route" "private_nat_gateway" {
-  route_table_id         = "${aws_route_table.private_rt.id}"
-  destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.private_nat_gateway.id
-}
-
-resource "aws_route_table_association" "private_subnet_asso" {
- count          = length(var.private_subnet_cidrs)
- subnet_id      = element(aws_subnet.private_subnets[*].id, count.index)
- route_table_id = aws_route_table.private_rt.id
-}
-
-resource "aws_eip" "my_eip" {
-  domain = "vpc"
+resource "aws_eip" "eip_nat" {
 }
 
 resource "aws_security_group" "ecs_security_group" {
-  vpc_id = aws_vpc.vpc_ecs.id
-
+  vpc_id = module.vpc.vpc_id
   name        = "ECS Security Group"
   description = "Allow inbound and outbound traffic"
 

@@ -18,8 +18,8 @@ variable "private_subnet_cidrs" {
 }
 
 variable "azs" {
- type        = list(string)
  description = "Availability Zones"
+ type        = list(string)
  default     = ["us-east-2a", "us-east-2b"]
 }
 
@@ -51,5 +51,11 @@ variable "enviroment"{
   description = "Enviroment define"
   type = string
   default = "sandbox"
+}
+
+variable "vpc_name" {
+  description = "Specify name for the VPC"
+  type = string
+  default = "ECS VPC"
 }
 
