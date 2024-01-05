@@ -1,6 +1,6 @@
 locals {
   aws_region       = var.region
-  environment_name = "sandbox"
+  environment_name = var.enviroment
   tags             = {
     ops_env              = "${local.environment_name}"
     ops_managed_by       = "terraform"
@@ -47,18 +47,12 @@ data terraform_remote_state "ec2"{
 
 resource "aws_autoscaling_group" "ecs_asg" {
  vpc_zone_identifier = [data.terraform_remote_state.vpc.outputs.subnet_public_id_a]
- desired_capacity    = 1
- max_size            = 1
- min_size            = 1
+ desired_capacity    = var.desire_capacity
+ max_size            = var.max_size
+ min_size            = var.min_size
 
  launch_template {
    id      = data.terraform_remote_state.ec2.outputs.ecs_lt_id
    version = "$Latest"
- }
-
- tag {
-   key                 = "AmazonECSManaged"
-   value               = true
-   propagate_at_launch = true
  }
 }

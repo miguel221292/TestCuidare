@@ -1,6 +1,6 @@
 locals {
   aws_region       = var.region
-  environment_name = "sandbox"
+  environment_name = var.enviroment
   profile          = var.aws_profile
   tags             = {
     ops_env              = "${local.environment_name}"
@@ -37,11 +37,10 @@ data terraform_remote_state "vpc"{
 }
 
 resource "aws_launch_template" "ecs_lt" {
- name_prefix   = "ecs-template"
- image_id      = "ami-09c0b8e7f21923ac0"
- instance_type = "t2.micro"
+ name_prefix   = var.launch_template_name
+ image_id      = var.image
+ instance_type = var.instance_type
  key_name               = "ec2ecsglog"
- #vpc_security_group_ids = [data.terraform_remote_state.vpc.outputs.security_group_id]
 
  iam_instance_profile {
    name = "ecsInstanceRole"
@@ -55,8 +54,8 @@ resource "aws_launch_template" "ecs_lt" {
  block_device_mappings {
    device_name = "/dev/xvda"
    ebs {
-     volume_size = 30
-     volume_type = "gp2"
+     volume_size = var.volume_size
+     volume_type = var.volume_type
    }
  }
 
@@ -76,12 +75,6 @@ resource "aws_lb" "ecs_alb" {
  load_balancer_type = "application"
  security_groups    = [data.terraform_remote_state.vpc.outputs.security_group_id]
  subnets            = [data.terraform_remote_state.vpc.outputs.subnet_public_id_a, data.terraform_remote_state.vpc.outputs.subnet_public_id_b]
-
- tags = {
-   Name = "ecs-alb"
-    Env = "Dev"
-    Created = "Terraform"
- }
 }
 
 
@@ -93,7 +86,7 @@ resource "aws_lb_target_group" "ecs_tg" {
  vpc_id      = data.terraform_remote_state.vpc.outputs.vpc_id
 
  health_check {
-   path = "/"
+   path = var.health_check
  }
 }
 

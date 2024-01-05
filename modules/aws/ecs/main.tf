@@ -1,6 +1,6 @@
 locals {
   aws_region       = var.region
-  environment_name = "sandbox"
+  environment_name = var.enviroment
   tags = {
     ops_env              = "${local.environment_name}"
     ops_managed_by       = "terraform"
@@ -60,12 +60,8 @@ resource "aws_ecs_cluster" "my_ecs_cluster" {
   name = var.ecs_cluster_name
 }
 
-#resource "aws_iam_service_linked_role" "ecs" {
-#  aws_service_name = "ecs.amazonaws.com"
-#}
-
 resource "aws_ecs_capacity_provider" "ecs_capacity_provider" {
-  name = "test1"
+  name = "docker-getting-started"
 
   auto_scaling_group_provider {
     auto_scaling_group_arn = data.terraform_remote_state.asg.outputs.asg_arn
@@ -78,9 +74,6 @@ resource "aws_ecs_capacity_provider" "ecs_capacity_provider" {
     }
   }
 
-  #depends_on = [
-  #  aws_iam_service_linked_role.ecs
-  #]
 }
 
 resource "aws_ecs_cluster_capacity_providers" "example" {
@@ -155,7 +148,6 @@ resource "aws_ecs_service" "ecs_service" {
     container_port   = 80
   }
 
-  #depends_on = [data.terraform_remote_state.outputs.tg]
 }
 
 output "ecs_cluster_id" {
