@@ -67,7 +67,7 @@ variable "ecs_tg_name" {
 variable "ecs_tg_port" {
   description = "Port for the Target Group"
   type        = number
-  default     = 80
+  default     = 3000
 }
 
 variable "ecs_tg_protocol" {
@@ -79,7 +79,7 @@ variable "ecs_tg_protocol" {
 variable "ecs_lt_port" {
   description = "Port for the Listener"
   type        = number
-  default     = 80
+  default     = 3000
 }
 
 variable "ecs_lt_protocol" {

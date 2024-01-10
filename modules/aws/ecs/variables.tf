@@ -67,3 +67,33 @@ variable "svc_name" {
   type        = string
   default     = "docker-service"
 }
+
+variable "task_name" {
+  description = "value"
+  type = string
+  default = "my-ecs-task"
+}
+
+variable "image" {
+  description = ""
+  type        = string
+  default     = "public.ecr.aws/k9h8z0a5/docker-getting-started:latest"
+}
+
+variable "cpu" {
+  description = ""
+  type        = number 
+  default     = 256
+}
+
+variable "memory" {
+  description = ""
+  type        = number 
+  default     = 512
+}
+
+variable "task_definition_name" {
+  description = "Task definition Name"
+  type        = string
+  default     = "my-ecs-task"
+}

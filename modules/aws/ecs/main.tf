@@ -92,7 +92,7 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
   family             = "my-ecs-task"
   network_mode       = "bridge"
   execution_role_arn = "arn:aws:iam::403811705992:role/ecsTaskExecutionRole"
-  cpu                = 256
+  cpu                = var.cpu
   runtime_platform {
     operating_system_family = "LINUX"
     cpu_architecture        = "X86_64"
@@ -100,13 +100,13 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
   container_definitions = jsonencode([
     {
       name   = var.container_name
-      image  = "public.ecr.aws/k9h8z0a5/docker-getting-started:latest"
-      cpu    = 256
-      memory = 512
+      image  = var.image
+      cpu    = var.cpu
+      memory = var.memory
       essential = true
       portMappings = [
         {
-          containerPort = 80
+          containerPort = 3000
           protocol      = "tcp"
         }
       ]
@@ -115,16 +115,17 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
 }
 
 resource "aws_ecs_service" "ecs_service" {
-  name            = var.svc_name
-  cluster         = aws_ecs_cluster.my_ecs_cluster.id
-  task_definition = aws_ecs_task_definition.ecs_task_definition.arn
-  desired_count   = 1
-  launch_type     = var.container_launch_type
+  name                  = var.svc_name
+  cluster               = aws_ecs_cluster.my_ecs_cluster.id
+  task_definition       = aws_ecs_task_definition.ecs_task_definition.arn
+  desired_count         = 1
+  launch_type           = var.container_launch_type
+  force_new_deployment  = true
 
   load_balancer {
     target_group_arn = data.terraform_remote_state.ec2.outputs.tg_arn
     container_name   = var.container_name
-    container_port   = 80
+    container_port   = 3000
   }
 
 }
