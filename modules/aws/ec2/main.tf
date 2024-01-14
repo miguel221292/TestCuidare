@@ -37,10 +37,10 @@ data terraform_remote_state "vpc"{
 }
 
 resource "aws_launch_template" "ecs_lt" {
-  name_prefix   = var.launch_template_name
+  name_prefix   = format("s%-s%", var.launch_template_name, var.enviroment)
   image_id      = var.image
   instance_type = var.instance_type
-  key_name               = "ec2ecsglog"
+  key_name               = var.ssh-key
 
   iam_instance_profile {
     name = "ecsInstanceRole"

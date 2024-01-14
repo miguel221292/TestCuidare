@@ -56,6 +56,6 @@ variable "enviroment"{
 variable "vpc_name" {
   description = "Specify name for the VPC"
   type = string
-  default = "ECS VPC"
+  default = "ecs-vpc"
 }
 

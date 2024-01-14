@@ -1,8 +1,9 @@
 region = "us-east-2"
 enviroment = "sandbox"
-image = "public.ecr.aws/k9h8z0a5/docker-getting-started:latest"
+image = "403811705992.dkr.ecr.us-east-2.amazonaws.com/test:262162a496e1b9355e49ddd9d9d3418de08a3831"
 cpu = 256
 memory = 512
-svc_name = "docker-service"
-task_name = "my-ecs-task"
-container_name = "docker"
+container_name = "testcuidare"
+svc_name= "testsvcuidare"
+task_name = "testcuida"
+task_definition_name = "my-ecs-task"

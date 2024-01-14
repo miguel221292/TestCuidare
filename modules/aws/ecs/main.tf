@@ -89,7 +89,7 @@ resource "aws_ecs_cluster_capacity_providers" "example" {
 }
 
 resource "aws_ecs_task_definition" "ecs_task_definition" {
-  family             = "my-ecs-task"
+  family             = var.task_definition_name
   network_mode       = "bridge"
   execution_role_arn = "arn:aws:iam::403811705992:role/ecsTaskExecutionRole"
   cpu                = var.cpu
@@ -106,8 +106,14 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
       essential = true
       portMappings = [
         {
-          containerPort = 3000
-          protocol      = "tcp"
+          containerPort = var.container_port
+          protocol      = var.container_protocol
+        }
+      ]
+      secrets = [
+        {
+          valueFrom = var.secrets_arn
+          name      = var.secret_name
         }
       ]
     }
@@ -125,7 +131,7 @@ resource "aws_ecs_service" "ecs_service" {
   load_balancer {
     target_group_arn = data.terraform_remote_state.ec2.outputs.tg_arn
     container_name   = var.container_name
-    container_port   = 3000
+    container_port   = var.container_port
   }
 
 }

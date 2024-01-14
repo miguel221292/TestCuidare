@@ -55,7 +55,7 @@ variable "volume_type" {
 variable "health_check" {
   description = "Health Check of the app expose by the load balancer"
   type        = string
-  default     = "/"
+  default     = "/healthcheck"
 }
 
 variable "ecs_tg_name" {
@@ -92,4 +92,10 @@ variable "ecs_lb_name" {
   description = "Name for the Load Balancer"
   type = string
   default = "ecs-load-balancer"
+}
+
+variable "ssh-key" {
+  description = "SSK Key to connect to instances"
+  type = string
+  default = "ec2ecsglog"
 }

@@ -46,9 +46,8 @@ data terraform_remote_state "ec2"{
 }
 
 resource "aws_autoscaling_group" "ecs_asg" {
-
-  #count = length("${data.terraform_remote_state.vpc.outputs.private_subnets}") > 0 ? 1 : 0
-  #subnet_route_table_ids = "${module.test-vpc.private_route_table_ids[count.index]}"
+ 
+ name = format("s%-s%", var.asg_name,var.enviroment)
  vpc_zone_identifier = data.terraform_remote_state.vpc.outputs.private_subnets
  desired_capacity    = var.desire_capacity
  max_size            = var.max_size

@@ -29,7 +29,7 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 2"
 
-  name = var.vpc_name
+  name = format("%s-%s", var.vpc_name, var.enviroment)
   cidr = var.vpc_cidr_block
 
   azs              = var.azs

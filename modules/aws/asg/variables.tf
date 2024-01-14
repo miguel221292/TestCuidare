@@ -39,3 +39,9 @@ variable "desire_capacity" {
   type        = number
   default     = 1
 }
+
+variable "asg_name" {
+  description = "Name for the Auto Scaling Group"
+  type = string
+  default = "ecs-capacity-provider"
+}

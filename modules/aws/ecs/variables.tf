@@ -96,4 +96,34 @@ variable "task_definition_name" {
   description = "Task definition Name"
   type        = string
   default     = "my-ecs-task"
+} 
+
+variable "secrets_arn" {
+  description = "Secret Manager ARN"
+  type        = string
+  default     = "arn:aws:secretsmanager:us-east-2:403811705992:secret:testcuidare-hPiwrQ"
+}
+
+variable "secret_name" {  
+  description = "Name of the secret manager"
+  type = string
+  default = "testcuidare"
+}
+
+variable "container_port" {
+  description = "Port for the container"
+  type = number
+  default = 3000
+}
+
+variable "container_protocol" {
+  description = "Type of connection to connect to container"
+  type = string
+  default = "tcp"
+}
+
+variable "task_definition_name" {
+  description = "name for the task definition"
+  type = string
+  default = "ecs-task"
 }
