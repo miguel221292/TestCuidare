@@ -16,7 +16,7 @@ variable "region" {
   default     = "us-east-2"
 }
 
-variable "enviroment"{
+variable "enviroment" {
   description = "Enviroment define"
   type = string
   default = "sandbox"

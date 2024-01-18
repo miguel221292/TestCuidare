@@ -20,7 +20,7 @@ variable "region" {
   default     = "us-east-2"
 }
 
-variable "enviroment"{
+variable "enviroment" {
   description = "Enviroment define"
   type = string
   default = "sandbox"
@@ -29,7 +29,7 @@ variable "enviroment"{
 variable "ecs_capacity_name" {
   description = "Capacity Provider's Name"
   type        = string
-  default     = "docker-getting-started"
+  default     = "testcuidare-ecs"
 }
 
 variable "ecs_max_scaling_size" {
@@ -53,7 +53,7 @@ variable "ecs_target_capacity" {
 variable "container_name" {
   description = "Containers' Name"
   type        = string
-  default     = "docker"  
+  default     = "testcuidare"  
 }
 
 variable "container_launch_type" {
@@ -63,21 +63,21 @@ variable "container_launch_type" {
 }
 
 variable "svc_name" {
-  description = ""
+  description = "name for the service"
   type        = string
-  default     = "docker-service"
+  default     = "testsvcuidare"
 }
 
 variable "task_name" {
-  description = "value"
+  description = "name for the task"
   type = string
-  default = "my-ecs-task"
+  default = "testcuida"
 }
 
 variable "image" {
-  description = ""
+  description = "Where the image is located to download"
   type        = string
-  default     = "public.ecr.aws/k9h8z0a5/docker-getting-started:latest"
+  default     = "403811705992.dkr.ecr.us-east-2.amazonaws.com/test:262162a496e1b9355e49ddd9d9d3418de08a3831"
 }
 
 variable "cpu" {
@@ -120,10 +120,4 @@ variable "container_protocol" {
   description = "Type of connection to connect to container"
   type = string
   default = "tcp"
-}
-
-variable "task_definition_name" {
-  description = "name for the task definition"
-  type = string
-  default = "ecs-task"
 }

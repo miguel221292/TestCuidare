@@ -1,9 +1,0 @@
-region = "us-east-2"
-enviroment = "sandbox"
-image = "403811705992.dkr.ecr.us-east-2.amazonaws.com/test:262162a496e1b9355e49ddd9d9d3418de08a3831"
-cpu = 256
-memory = 512
-container_name = "testcuidare"
-svc_name= "testsvcuidare"
-task_name = "testcuida"
-task_definition_name = "my-ecs-task"
