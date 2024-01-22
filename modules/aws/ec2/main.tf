@@ -37,7 +37,7 @@ data terraform_remote_state "vpc"{
 }
 
 resource "aws_launch_template" "ecs_lt" {
-  name_prefix   = format("s%-s%", var.launch_template_name, var.enviroment)
+  name_prefix   = var.launch_template_name
   image_id      = var.image
   instance_type = var.instance_type
   key_name               = var.ssh-key
@@ -72,7 +72,7 @@ resource "aws_launch_template" "ecs_lt" {
 resource "aws_lb" "ecs_alb" {
   name               = var.ecs_lb_name
   internal           = false
-  load_balancer_type = "application"
+  load_balancer_type = "network"
   security_groups    = [data.terraform_remote_state.vpc.outputs.security_group_id]
   subnets            = data.terraform_remote_state.vpc.outputs.public_subnets
 }

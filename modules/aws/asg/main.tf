@@ -47,7 +47,7 @@ data terraform_remote_state "ec2"{
 
 resource "aws_autoscaling_group" "ecs_asg" {
  
- name = format("s%-s%", var.asg_name,var.enviroment)
+ name = var.asg_name
  vpc_zone_identifier = data.terraform_remote_state.vpc.outputs.private_subnets
  desired_capacity    = var.desire_capacity
  max_size            = var.max_size
